@@ -36,13 +36,13 @@ ADI <- function(u0, K=1, f, L1=1, N1=30, L2=1, N2=30, T=1, M=30) {
     for (j in 2:N2) {
       F1 <- gamma2/2*(w[2:N1, j+1, n] + w[2:N1, j-1, n]) + 
         (1-gamma2)*w[2:N1, j, n] + Fh[2:N1, j]
-      wh[2:N1, j] <- doublesweep(A1, A1, C1, F1, 0, 0)
+      wh[2:N1, j] <- doublesweep(A1, A1, C1, -F1, 0, 0)
     }
     # second half step
     for (k in 2:N1) {
       F2 <- gamma1/2*(wh[k+1, 2:N2] + wh[k-1, 2:N2]) + 
         (1-gamma1)*wh[k, 2:N2] + Fh[k, 2:N2]
-      w[k, 2:N2, n+1] <- doublesweep(A2, A2, C2, F2, 0, 0)
+      w[k, 2:N2, n+1] <- doublesweep(A2, A2, C2, -F2, 0, 0)
     }
   }
   
@@ -109,7 +109,7 @@ ADI2 <- function(u0=function(x, y) sin(pi*x)*sin(pi*y),
       F1 <- gamma2/2*(w[2:N1, j+1, n] + w[2:N1, j-1, n]) + 
         (1-gamma2)*w[2:N1, j, n] + Fh[2:N1, j]
       #Primary Changes ------------------------------V------------------V
-      wh[2:N1, j] <- doublesweep(A1, A1, C1, F1, x_at_0(y[j],t[n]), x_at_L1(y[j],t[n]))
+      wh[2:N1, j] <- doublesweep(A1, A1, C1, -F1, x_at_0(y[j],t[n]), x_at_L1(y[j],t[n]))
       #Make sure to place the boundaries in the result.
       wh[1, j] <- x_at_0(y[j],t[n])
       wh[N1+1,j] <- x_at_L1(y[j],t[n])
@@ -119,7 +119,7 @@ ADI2 <- function(u0=function(x, y) sin(pi*x)*sin(pi*y),
       F2 <- gamma1/2*(wh[k+1, 2:N2] + wh[k-1, 2:N2]) + 
         (1-gamma1)*wh[k, 2:N2] + Fh[k, 2:N2]
       #Primary Changes ------------------------------V------------------V
-      w[k, 2:N2, n+1] <- doublesweep(A2, A2, C2, F2, y_at_0(x[j],t[n]), y_at_L2(x[j],t[n]))
+      w[k, 2:N2, n+1] <- doublesweep(A2, A2, C2, -F2, y_at_0(x[j],t[n]), y_at_L2(x[j],t[n]))
       #Make sure to place the boundaries in the result.
       w[k,1,n+1] <- y_at_0(x[j],t[n])
       w[k,N2+1,n+1] <- y_at_L2(x[j],t[n])
